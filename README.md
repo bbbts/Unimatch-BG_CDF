@@ -1,174 +1,150 @@
-# UniMatch
 
-[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/revisiting-weak-to-strong-consistency-in-semi/semi-supervised-semantic-segmentation-on-21)](https://paperswithcode.com/sota/semi-supervised-semantic-segmentation-on-21?p=revisiting-weak-to-strong-consistency-in-semi)
-[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/revisiting-weak-to-strong-consistency-in-semi/semi-supervised-semantic-segmentation-on-4)](https://paperswithcode.com/sota/semi-supervised-semantic-segmentation-on-4?p=revisiting-weak-to-strong-consistency-in-semi)
-[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/revisiting-weak-to-strong-consistency-in-semi/semi-supervised-semantic-segmentation-on-27)](https://paperswithcode.com/sota/semi-supervised-semantic-segmentation-on-27?p=revisiting-weak-to-strong-consistency-in-semi)
-[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/revisiting-weak-to-strong-consistency-in-semi/semi-supervised-semantic-segmentation-on-29)](https://paperswithcode.com/sota/semi-supervised-semantic-segmentation-on-29?p=revisiting-weak-to-strong-consistency-in-semi)
-[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/revisiting-weak-to-strong-consistency-in-semi/semi-supervised-semantic-segmentation-on-10)](https://paperswithcode.com/sota/semi-supervised-semantic-segmentation-on-10?p=revisiting-weak-to-strong-consistency-in-semi)
-[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/revisiting-weak-to-strong-consistency-in-semi/semi-supervised-semantic-segmentation-on-22)](https://paperswithcode.com/sota/semi-supervised-semantic-segmentation-on-22?p=revisiting-weak-to-strong-consistency-in-semi)
-[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/revisiting-weak-to-strong-consistency-in-semi/semi-supervised-semantic-segmentation-on-2)](https://paperswithcode.com/sota/semi-supervised-semantic-segmentation-on-2?p=revisiting-weak-to-strong-consistency-in-semi)
-[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/revisiting-weak-to-strong-consistency-in-semi/semi-supervised-semantic-segmentation-on-1)](https://paperswithcode.com/sota/semi-supervised-semantic-segmentation-on-1?p=revisiting-weak-to-strong-consistency-in-semi)
+# UniMatch + BG-CDF
 
-[**News: Check our latest UniMatch V2 framework!**](https://github.com/LiheYoung/UniMatch-V2)
+**Integrating Boundary-Guided Class Distribution Flow (BG-CDF) into UniMatch for Semi-Supervised Semantic Segmentation**
 
-This codebase contains a strong re-implementation of FixMatch in the field of semi-supervised semantic segmentation, as well as the official PyTorch implementation of our UniMatch in the **[natural](https://github.com/LiheYoung/UniMatch), [remote sensing](https://github.com/LiheYoung/UniMatch/tree/main/more-scenarios/remote-sensing), and [medical](https://github.com/LiheYoung/UniMatch/tree/main/more-scenarios/medical) scenarios**.
+This repository extends the original [UniMatch](https://github.com/LiheYoung/UniMatch) framework with **Boundary-Guided Class Distribution Flow (BG-CDF)**, a boundary-aware regularization method designed to improve semantic segmentation near class boundaries.
 
-> **[Revisiting Weak-to-Strong Consistency in Semi-Supervised Semantic Segmentation](https://arxiv.org/abs/2208.09910)**</br>
-> Lihe Yang, Lei Qi, Litong Feng, Wayne Zhang, Yinghuan Shi</br>
-> *In Conference on Computer Vision and Pattern Recognition (CVPR), 2023*
+The implementation is evaluated on **Cityscapes** using DeepLabV3+ with a ResNet-101 backbone. We compare a reproduced UniMatch baseline against UniMatch augmented with BG-CDF under four labeled-data settings.
 
+- **Original method:** UniMatch
+- **Extended method:** UniMatch + BG-CDF
+- **Dataset:** Cityscapes
+- **Backbone:** ResNet-101
+- **BG-CDF loss weight:** λ_BG-CDF = 0.5
+- **Evaluation metric:** Validation mean Intersection over Union (mIoU)
 
-**We provide a list of [Awesome Semi-Supervised Semantic Segmentation](./docs/SemiSeg.md) works.**
+## Repository
 
-<p align="left">
-<img src="./docs/framework.png" width=90% height=90% 
-class="center">
-</p>
+- **Modified implementation:** [Unimatch-BG_CDF](https://github.com/bbbts/Unimatch-BG_CDF)
+- **Training logs and model checkpoints:** [Google Drive — Cityscapes experiments](https://drive.google.com/drive/u/1/folders/1Jveuhi3S4HCRj3FG1ov__xOW4rMQRIey)
+- **Original UniMatch implementation:** [LiheYoung/UniMatch](https://github.com/LiheYoung/UniMatch)
 
-## Results
+## Method Overview
 
-**You can check our [training logs](https://github.com/LiheYoung/UniMatch/blob/main/training-logs) for convenient comparisons during reproducing.**
+UniMatch is a semi-supervised semantic segmentation framework that learns from labeled and unlabeled images using weak-to-strong consistency.
 
-**Note: we have added and updated some results in our camera-ready version. Please refer to our [latest version](https://arxiv.org/abs/2208.09910)**.
+This repository extends the training objective with BG-CDF, a boundary-aware loss that encourages more consistent class-probability distributions around predicted semantic boundaries.
 
-### Pascal VOC 2012
+The combined objective can be expressed conceptually as:
 
-Labeled images are sampled from the **original high-quality** training set. Results are obtained by DeepLabv3+ based on ResNet-101 with training size 321.
+L_total = L_UniMatch + λ_BG-CDF × L_BG-CDF
 
-| Method                      | 1/16 (92) | 1/8 (183) | 1/4 (366) | 1/2 (732) | Full (1464) |
-| :-------------------------: | :-------: | :-------: | :-------: | :-------: | :---------: |
-| SupBaseline                 | 45.1      | 55.3      | 64.8      | 69.7      | 73.5        |
-| U<sup>2</sup>PL             | 68.0      | 69.2      | 73.7      | 76.2      | 79.5        |
-| ST++                        | 65.2      | 71.0      | 74.6      | 77.3      | 79.1        |
-| PS-MT                       | 65.8      | 69.6      | 76.6      | 78.4      | 80.0        |
-| **UniMatch (Ours)**         | **75.2**  | **77.2**  | **78.8**  | **79.9**  | **81.2**    |
+where L_UniMatch denotes the original UniMatch training objective and L_BG-CDF is the additional boundary-aware regularization term.
 
+For the experiments reported here, the BG-CDF loss weight is set to **0.5**.
 
-### Cityscapes
+The goal is to investigate whether explicitly incorporating boundary information can improve segmentation performance when only a fraction of the training images are labeled.
 
-Results are obtained by DeepLabv3+ based on ResNet-50/101. We reproduce U<sup>2</sup>PL results on ResNet-50.
+## Cityscapes Experiments
 
-**Note: the results differ from our arXiv-V1 because we change the confidence threshold from 0.95 to 0, and change the ResNet output stride from 8 to 16. Therefore, it is currently more efficient to run.**
+### Experimental Setup
 
-*You can click on the numbers to be directed to corresponding checkpoints.*
+| Component | Configuration |
+|---|---|
+| Dataset | Cityscapes |
+| Segmentation architecture | DeepLabV3+ |
+| Backbone | ResNet-101 |
+| Training framework | UniMatch |
+| Proposed extension | UniMatch + BG-CDF |
+| BG-CDF loss weight | 0.5 |
+| Labeled-data settings | 1/16, 1/8, 1/4, 1/2 |
+| Training duration | 240 epochs |
+| GPUs used | 2 |
+| Main evaluation metric | Validation mIoU |
 
-| ResNet-50                   | 1/16      | 1/8       | 1/4       | 1/2       | ResNet-101           | 1/16        | 1/8         | 1/4         | 1/2         |
-| :-------------------------: | :-------: | :-------: | :-------: | :-------: | :------------------: | :---------: | :---------: | :---------: | :---------: |
-| SupBaseline                 | 63.3      | 70.2      | 73.1      | 76.6      | SupBaseline          | 66.3        | 72.8        | 75.0        | 78.0        |
-| U<sup>2</sup>PL             | 70.6      | 73.0      | 76.3      | 77.2      | U<sup>2</sup>PL      | 74.9        | 76.5        | 78.5        | 79.1        |
-| **UniMatch (Ours)**         | [**75.0**](https://drive.google.com/file/d/1J-GjeZRhIhnbxtD8f_lDflXB24S1E995/view?usp=sharing)  | [**76.8**](https://drive.google.com/file/d/1pA-enIDGWSVyhJg7SFIjFQ-nlxetj6-m/view?usp=sharing)  | [**77.5**](https://drive.google.com/file/d/1EEh8XMljUf40wzMblnv9Ez9_dfXYqO7P/view?usp=sharing)  | [**78.6**](https://drive.google.com/file/d/18Bd43RsXhTw9RL3F9Vn9lz_Gs5KQWaTE/view?usp=sharing)  | **UniMatch (Ours)**  | [**76.6**](https://drive.google.com/file/d/1qmCBLC9aj57kz1_OptvK6YTo4GwxTsiK/view?usp=sharing)    | [**77.9**](https://drive.google.com/file/d/14LrPkWC8QIMO44da5pGflyOrW_Fdxo0U/view?usp=sharing)    | [**79.2**](https://drive.google.com/file/d/1cL-p2_FIwEe9Y4AapSjlLmt4hdAZzX7a/view?usp=sharing)    | [**79.5**](https://drive.google.com/file/d/1ve2BAYoh8wzQxhKD-CE7bsjcR5KqQEa3/view?usp=sharing)    |
+The original UniMatch implementation was independently reproduced in a reduced GPU configuration. The training setup used two GPUs rather than the four GPUs recommended for reproducing the original benchmark results. Consequently, these results should be interpreted in the context of the specific reproduction and training configuration used here.
 
+### Results
 
-### COCO
+The following table reports the best validation mIoU recorded during training for each labeled-data setting.
 
-Results are obtained by DeepLabv3+ based on Xception-65.
+| Labeled Data | Reproduced UniMatch | UniMatch + BG-CDF | Absolute Change |
+|:---:|---:|---:|---:|
+| 1/16 | 75.57 | **75.73** | +0.16 |
+| 1/8 | 77.90 | **78.18** | +0.28 |
+| 1/4 | 78.88 | **79.17** | +0.29 |
+| 1/2 | 79.50 | **79.55** | +0.05 |
 
-*You can click on the numbers to be directed to corresponding checkpoints.*
+*Scores are in percentage points of mIoU. Absolute change is calculated as the BG-CDF result minus the reproduced UniMatch result.*
 
-| Method                      | 1/512 (232) | 1/256 (463) | 1/128 (925) | 1/64 (1849) | 1/32 (3697) |
-| :-------------------------: | :---------: | :---------: | :---------: | :---------: | :---------: |
-| SupBaseline                 | 22.9        | 28.0        | 33.6        | 37.8        | 42.2        |
-| PseudoSeg                   | 29.8        | 37.1        | 39.1        | 41.8        | 43.6        |
-| PC<sup>2</sup>Seg           | 29.9        | 37.5        | 40.1        | 43.7        | 46.1        |
-| **UniMatch (Ours)**         | [**31.9**](https://drive.google.com/file/d/1kFgg0SGLzS7SJI8sYPQKGLnw8G060kjz/view?usp=sharing)    | [**38.9**](https://drive.google.com/file/d/1scx1FanOcmaut8eVESLaSx7-DiT5JJA6/view?usp=sharing)    | [**44.4**](https://drive.google.com/file/d/1oojVn12tgPW_m94tAOU5YYVZ7xJJitCj/view?usp=sharing)    | [**48.2**](https://drive.google.com/file/d/1tI1AZ8rY6hYQrs216iz2NmlAfLl8f1uP/view?usp=sharing)    | [**49.8**](https://drive.google.com/file/d/1hwRr0IIhdeKH2JYO--iOLl5y69sJ0UYm/view?usp=sharing)    |
+### Observations
 
+- BG-CDF improves the best recorded validation mIoU across all four labeled-data settings in these experiments.
+- The largest absolute improvement is observed with the 1/4 labeled-data setting.
+- The improvement at the 1/2 setting is comparatively small, suggesting that the effect of boundary-aware regularization may depend on the amount of labeled data available.
+- These results provide preliminary evidence that BG-CDF can complement UniMatch. Additional runs with multiple random seeds and consistent data splits are needed to assess the robustness and statistical significance of the improvements.
 
-### More Scenarios
+**Important evaluation note:** The reported values are the best validation mIoU values recorded by the training process. They are not results from a separate, independently implemented inference or test-set evaluation. Checkpoints and training logs are available in the linked Google Drive folder.
 
-We also apply our UniMatch in the scenarios of semi-supervised **remote sensing change detection** and **medical image segmentation**, achieving tremendous improvements over previous methods:
+## Training
 
-- [Remote Sensing Change Detection](https://github.com/LiheYoung/UniMatch/blob/main/more-scenarios/remote-sensing) [[training logs]](https://github.com/LiheYoung/UniMatch/blob/main/more-scenarios/remote-sensing/training-logs)
-- [Medical Image Segmentation](https://github.com/LiheYoung/UniMatch/blob/main/more-scenarios/medical) [[training logs]](https://github.com/LiheYoung/UniMatch/blob/main/more-scenarios/medical/training-logs)
+### Requirements
 
-## Getting Started
+Please refer to the original [UniMatch repository](https://github.com/LiheYoung/UniMatch) and the `requirements.txt` file in this repository for the environment and dependencies.
 
-### Installation
+You will also need the Cityscapes dataset, the appropriate pretrained ResNet-101 weights, and a valid dataset path in the configuration.
 
-```bash
-cd UniMatch
-conda create -n unimatch python=3.10.4
-conda activate unimatch
-pip install -r requirements.txt
-pip install torch==1.12.1+cu113 torchvision==0.13.1+cu113 -f https://download.pytorch.org/whl/torch_stable.html
-```
+### Train UniMatch + BG-CDF
 
-### Pretrained Backbone
+The command used for the reported experiments was:
 
-[ResNet-50](https://drive.google.com/file/d/1mqUrqFvTQ0k5QEotk4oiOFyP6B9dVZXS/view?usp=sharing) | [ResNet-101](https://drive.google.com/file/d/1Rx0legsMolCWENpfvE2jUScT3ogalMO8/view?usp=sharing) | [Xception-65](https://drive.google.com/open?id=1_j_mE07tiV24xXOJw4XDze0-a0NAhNVi)
+    CUDA_VISIBLE_DEVICES=2,3 sh scripts/train.sh 2 29502
 
-```
-├── ./pretrained
-    ├── resnet50.pth
-    ├── resnet101.pth
-    └── xception.pth
-```
+Here:
 
-### Dataset
+- `CUDA_VISIBLE_DEVICES=2,3` selects the two visible GPUs.
+- `2` specifies the number of GPUs passed to the training script.
+- `29502` specifies the distributed training port.
 
-- Pascal: [JPEGImages](http://host.robots.ox.ac.uk/pascal/VOC/voc2012/VOCtrainval_11-May-2012.tar) | [SegmentationClass](https://drive.google.com/file/d/1ikrDlsai5QSf2GiSUR3f8PZUzyTubcuF/view?usp=sharing)
-- Cityscapes: [leftImg8bit](https://www.cityscapes-dataset.com/file-handling/?packageID=3) | [gtFine](https://drive.google.com/file/d/1E_27g9tuHm6baBqcA7jct_jqcGA89QPm/view?usp=sharing)
-- COCO: [train2017](http://images.cocodataset.org/zips/train2017.zip) | [val2017](http://images.cocodataset.org/zips/val2017.zip) | [masks](https://drive.google.com/file/d/166xLerzEEIbU7Mt1UGut-3-VN41FMUb1/view?usp=sharing)
+The training script uses the repository's configured dataset, labeled-data split, model architecture, and training settings. Verify the relevant configuration files before running experiments with different settings.
 
-Please modify your dataset path in configuration files.
+### BG-CDF Configuration
 
-**The groundtruth masks have already been pre-processed by us. You can use them directly.**
+The BG-CDF loss contribution was configured with a weight of `0.5`.
 
-```
-├── [Your Pascal Path]
-    ├── JPEGImages
-    └── SegmentationClass
-    
-├── [Your Cityscapes Path]
-    ├── leftImg8bit
-    └── gtFine
-    
-├── [Your COCO Path]
-    ├── train2017
-    ├── val2017
-    └── masks
-```
+To reproduce the reported extension, verify the BG-CDF implementation and its configured weight in the training code. For a fair comparison, keep the dataset split, backbone, training schedule, and other relevant settings consistent between UniMatch and UniMatch + BG-CDF.
 
-## Usage
+### Evaluation and Checkpoints
 
-### UniMatch
+The training process evaluates the model during training and records validation mIoU. The best validation result is used for the reported comparison.
 
-```bash
-# use torch.distributed.launch
-sh scripts/train.sh <num_gpu> <port>
-# to fully reproduce our results, the <num_gpu> should be set as 4 on all three datasets
-# otherwise, you need to adjust the learning rate accordingly
+The original repository does not provide a separate inference script specifically for this experiment. Training logs and the corresponding model checkpoints are provided in the [Google Drive experiment folder](https://drive.google.com/drive/u/1/folders/1Jveuhi3S4HCRj3FG1ov__xOW4rMQRIey).
 
-# or use slurm
-# sh scripts/slurm_train.sh <num_gpu> <port> <partition>
-```
+## Reproducibility Notes
 
-To train on other datasets or splits, please modify
-``dataset`` and ``split`` in [train.sh](https://github.com/LiheYoung/UniMatch/blob/main/scripts/train.sh).
+- The results in this README come from the experiments conducted with this modified repository.
+- The reproduced UniMatch baseline is distinguished from the original authors' published benchmark results.
+- The experiments use a two-GPU configuration, so they should not be assumed to reproduce the original four-GPU setup exactly.
+- The BG-CDF coefficient is 0.5 for the reported extension.
+- The reported metric is the best validation mIoU recorded during training.
+- Multiple random seeds, additional ablation studies, and independent evaluation would help establish the robustness and generality of the observed improvements.
 
-### FixMatch
+## Original UniMatch Work
 
-Modify the ``method`` from ``'unimatch'`` to ``'fixmatch'`` in [train.sh](https://github.com/LiheYoung/UniMatch/blob/main/scripts/train.sh).
+This project builds upon the following publication:
 
-### Supervised Baseline
+**Revisiting Weak-to-Strong Consistency in Semi-Supervised Semantic Segmentation**
 
-Modify the ``method`` from ``'unimatch'`` to ``'supervised'`` in [train.sh](https://github.com/LiheYoung/UniMatch/blob/main/scripts/train.sh), and double the ``batch_size`` in configuration file if you use the same number of GPUs as semi-supervised setting (no need to change ``lr``). 
+Lihe Yang, Lei Qi, Litong Feng, Wayne Zhang, and Yinghuan Shi. CVPR 2023.
 
+Paper: [https://arxiv.org/abs/2208.09910](https://arxiv.org/abs/2208.09910)
 
-## Citation
+Original implementation: [https://github.com/LiheYoung/UniMatch](https://github.com/LiheYoung/UniMatch)
 
-If you find this project useful, please consider citing:
+### Citation
 
-```bibtex
-@inproceedings{unimatch,
-  title={Revisiting Weak-to-Strong Consistency in Semi-Supervised Semantic Segmentation},
-  author={Yang, Lihe and Qi, Lei and Feng, Litong and Zhang, Wayne and Shi, Yinghuan},
-  booktitle={CVPR},
-  year={2023}
-}
-```
+If you use the original UniMatch framework, please cite:
 
-We have some other works on semi-supervised semantic segmentation:
+    @inproceedings{unimatch,
+      title={Revisiting Weak-to-Strong Consistency in Semi-Supervised Semantic Segmentation},
+      author={Yang, Lihe and Qi, Lei and Feng, Litong and Zhang, Wayne and Shi, Yinghuan},
+      booktitle={CVPR},
+      year={2023}
+    }
 
-- [[CVPR 2022] ST++](https://github.com/LiheYoung/ST-PlusPlus) 
-- [[CVPR 2023] AugSeg](https://github.com/ZhenZHAO/AugSeg)
-- [[CVPR 2023] iMAS](https://github.com/ZhenZHAO/iMAS)
+For work using the BG-CDF extension, please also cite the relevant BG-CDF publication when it becomes available.
+
+## Acknowledgments
+
+This repository builds on the publicly available [UniMatch](https://github.com/LiheYoung/UniMatch) implementation. We thank the original authors for making their code and research available.
