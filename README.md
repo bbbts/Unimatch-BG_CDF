@@ -62,18 +62,18 @@ The following table reports the best validation mIoU recorded during training fo
 | Labeled Data | Reproduced UniMatch | UniMatch + BG-CDF | Absolute Change |
 |:---:|---:|---:|---:|
 | 1/16 | 75.57 | **75.73** | +0.16 |
-| 1/8 | 77.90 | **78.18** | +0.28 |
+| 1/8 | 77.67 | **78.18** | +0.51 |
 | 1/4 | 78.88 | **79.17** | +0.29 |
-| 1/2 | 79.50 | **79.55** | +0.05 |
+| 1/2 | 79.51 | **79.55** | +0.04 |
 
-*Scores are in percentage points of mIoU. Absolute change is calculated as the BG-CDF result minus the reproduced UniMatch result.*
+*Scores are in percentage points of mIoU. Absolute change is calculated as the BG-CDF result minus the reproduced UniMatch baseline. All values are best validation mIoU results obtained in our computing environment.*
 
 ### Observations
 
-- BG-CDF improves the best recorded validation mIoU across all four labeled-data settings in these experiments.
-- The largest absolute improvement is observed with the 1/4 labeled-data setting.
-- The improvement at the 1/2 setting is comparatively small, suggesting that the effect of boundary-aware regularization may depend on the amount of labeled data available.
-- These results provide preliminary evidence that BG-CDF can complement UniMatch. Additional runs with multiple random seeds and consistent data splits are needed to assess the robustness and statistical significance of the improvements.
+- BG-CDF improves the best recorded validation mIoU across all four labeled-data settings.
+- The largest absolute improvement is observed with the 1/8 labeled-data setting (+0.51 percentage points).
+- Improvements vary with labeled-data availability, suggesting that the effect of boundary-aware regularization is not uniform across supervision levels.
+- These results provide preliminary cross-domain evidence that BG-CDF can complement UniMatch. Multiple random seeds and independent evaluation would help establish the robustness and statistical significance of these improvements.
 
 **Important evaluation note:** The reported values are the best validation mIoU values recorded by the training process. They are not results from a separate, independently implemented inference or test-set evaluation. Checkpoints and training logs are available in the linked Google Drive folder.
 
